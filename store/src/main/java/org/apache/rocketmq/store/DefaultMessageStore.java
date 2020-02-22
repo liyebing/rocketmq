@@ -466,6 +466,7 @@ public class DefaultMessageStore implements MessageStore {
     @Override
     public boolean isOSPageCacheBusy() {
         long begin = this.getCommitLog().getBeginTimeInLock();
+        //一次消息追加过程中持有锁的总时长，即往内存映射文件或pageCache追加一条消息所耗时间
         long diff = this.systemClock.now() - begin;
 
         return diff < 10000000

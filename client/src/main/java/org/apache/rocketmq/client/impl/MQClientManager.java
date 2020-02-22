@@ -29,13 +29,14 @@ public class MQClientManager {
     private final static InternalLogger log = ClientLogger.getLog();
     private static MQClientManager instance = new MQClientManager();
     private AtomicInteger factoryIndexGenerator = new AtomicInteger();
+    //todo 集群所有的MQClientInstance集合？ 奇怪的是为何单机能获取到集群所有的MQClientInstance ？
     private ConcurrentMap<String/* clientId */, MQClientInstance> factoryTable =
         new ConcurrentHashMap<String, MQClientInstance>();
 
     private MQClientManager() {
 
     }
-
+    //简单有效的单例实现
     public static MQClientManager getInstance() {
         return instance;
     }
@@ -51,6 +52,7 @@ public class MQClientManager {
             instance =
                 new MQClientInstance(clientConfig.cloneClientConfig(),
                     this.factoryIndexGenerator.getAndIncrement(), clientId, rpcHook);
+            //putIfAbsent,所以if (null == instance) 不用加锁
             MQClientInstance prev = this.factoryTable.putIfAbsent(clientId, instance);
             if (prev != null) {
                 instance = prev;

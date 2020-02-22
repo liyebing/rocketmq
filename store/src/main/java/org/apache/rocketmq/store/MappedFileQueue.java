@@ -42,8 +42,9 @@ public class MappedFileQueue {
     private final CopyOnWriteArrayList<MappedFile> mappedFiles = new CopyOnWriteArrayList<MappedFile>();
 
     private final AllocateMappedFileService allocateMappedFileService;
-
+    //刷盘指针
     private long flushedWhere = 0;
+    //byteBuffer提交指针,committedWhere > flushedWhere
     private long committedWhere = 0;
 
     private volatile long storeTimestamp = 0;
@@ -151,7 +152,7 @@ public class MappedFileQueue {
             // ascending order
             Arrays.sort(files);
             for (File file : files) {
-
+                // file length预分配，通过 this.fileChannel.map(MapMode.READ_WRITE, 0, fileSize);
                 if (file.length() != this.mappedFileSize) {
                     log.warn(file + "\t" + file.length()
                         + " length not matched message store config value, please check it manually");

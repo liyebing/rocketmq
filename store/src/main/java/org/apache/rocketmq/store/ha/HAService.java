@@ -166,6 +166,8 @@ public class HAService {
         }
 
         /**
+         * 使用原生的NIO完成主从通讯,是因为这里只是两个单点之间的简单通讯,没必要使用Netty类似的重型框架
+         *
          * Starts listening to slave connections.
          *
          * @throws Exception If fails.
